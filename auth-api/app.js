@@ -1,5 +1,4 @@
 import express from 'express';
-import sequelize from './src/config/db/db-config.js';
 import { createInitialData } from './src/config/db/initial-data.js'
 import userRoutes from './src/modules/user/routes/user-routes.js'
 
@@ -19,8 +18,6 @@ app.get('/api/status', (req, res) => {
     httpStatus: 200
   })
 })
-
-
 
 app.listen(PORT, () => {
   console.info(`Server started successfully at port ${PORT}`);
