@@ -16,6 +16,7 @@ class UserService {
       const user = await UserRepository.findByEmail(email);
 
       this.validateUserNotFound(user)
+      this.validateAuthenticatedUser(user, req.authUser)
 
       return {
         status: HTTP_STATUS.SUCCESS,
@@ -42,6 +43,12 @@ class UserService {
   validateUserNotFound(user) {
     if (!user) {
       throw new UserException(HTTP_STATUS.BAD_REQUEST, 'User was not found.')
+    }
+  }
+
+  validateAuthenticatedUser(user, authUser) {
+    if (!authUser || user.id !== authUser.id) {
+      throw new UserException(HTTP_STATUS.FORBIDDEN, 'You cannot see this user data.')
     }
   }
 
