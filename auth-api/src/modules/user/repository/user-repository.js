@@ -1,7 +1,7 @@
 import User from '../model/user-model.js'
 
 class UserRepository {
-  async findByEmail(id) {
+  async findById(id) {
     try {
       return await User.findOne({ where: { id } });
     } catch (err) {
