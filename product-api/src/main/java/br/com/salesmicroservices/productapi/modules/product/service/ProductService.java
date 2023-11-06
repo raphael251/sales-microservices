@@ -6,9 +6,14 @@ import br.com.salesmicroservices.productapi.modules.product.dto.ProductRequest;
 import br.com.salesmicroservices.productapi.modules.product.dto.ProductResponse;
 import br.com.salesmicroservices.productapi.modules.product.model.Product;
 import br.com.salesmicroservices.productapi.modules.product.repository.ProductRepository;
+import br.com.salesmicroservices.productapi.modules.supplier.dto.SupplierResponse;
+import br.com.salesmicroservices.productapi.modules.supplier.model.Supplier;
 import br.com.salesmicroservices.productapi.modules.supplier.service.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
 
@@ -22,6 +27,58 @@ public class ProductService {
     private SupplierService supplierService;
     @Autowired
     private CategoryService categoryService;
+
+    public ProductResponse findByIdResponse(Integer id) {
+        return ProductResponse.of(findById(id));
+    }
+
+    public List<ProductResponse> findAll() {
+        return productRepository
+                .findAll()
+                .stream()
+                .map(ProductResponse::of)
+                .collect(Collectors.toList());
+    }
+
+    public List<ProductResponse> findByName(String name) {
+        if (isEmpty(name)) {
+            throw new ValidationException("The product name was not informed.");
+        }
+        return productRepository
+                .findByNameIgnoreCaseContaining(name)
+                .stream()
+                .map(ProductResponse::of)
+                .collect(Collectors.toList());
+    }
+
+    public List<ProductResponse> findBySupplierId(Integer supplierId) {
+        if (isEmpty(supplierId)) {
+            throw new ValidationException("The product supplier ID was not informed.");
+        }
+        return productRepository
+                .findBySupplierId(supplierId)
+                .stream()
+                .map(ProductResponse::of)
+                .collect(Collectors.toList());
+    }
+
+    public List<ProductResponse> findByCategoryId(Integer categoryId) {
+        if (isEmpty(categoryId)) {
+            throw new ValidationException("The product category ID was not informed.");
+        }
+        return productRepository
+                .findBySupplierId(categoryId)
+                .stream()
+                .map(ProductResponse::of)
+                .collect(Collectors.toList());
+    }
+
+    public Product findById(Integer id) {
+        if (isEmpty(id)) {
+            throw new ValidationException("The product ID was not informed.");
+        }
+        return productRepository.findById(id).orElseThrow(() -> new ValidationException("There is no product for the given ID."));
+    }
 
     public ProductResponse save(ProductRequest request) {
         validateProductDataInformed(request);
