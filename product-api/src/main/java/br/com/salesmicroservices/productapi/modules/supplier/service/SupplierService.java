@@ -1,6 +1,8 @@
 package br.com.salesmicroservices.productapi.modules.supplier.service;
 
+import br.com.salesmicroservices.productapi.config.SuccessResponse;
 import br.com.salesmicroservices.productapi.config.exception.ValidationException;
+import br.com.salesmicroservices.productapi.modules.product.service.ProductService;
 import br.com.salesmicroservices.productapi.modules.supplier.dto.SupplierRequest;
 import br.com.salesmicroservices.productapi.modules.supplier.dto.SupplierResponse;
 import br.com.salesmicroservices.productapi.modules.supplier.model.Supplier;
@@ -17,6 +19,8 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 public class SupplierService {
     @Autowired
     private SupplierRepository supplierRepository;
+    @Autowired
+    private ProductService productService;
 
     public SupplierResponse findByIdResponse(Integer id) {
         return SupplierResponse.of(findById(id));
@@ -42,9 +46,7 @@ public class SupplierService {
     }
 
     public Supplier findById(Integer id) {
-        if (isEmpty(id)) {
-            throw new ValidationException("The supplier ID was not informed.");
-        }
+        validateInformedId(id);
         return supplierRepository.findById(id).orElseThrow(() -> new ValidationException("There is no supplier for the given ID."));
     }
 
@@ -57,6 +59,21 @@ public class SupplierService {
     private void validateSupplierNameInformed(SupplierRequest request) {
         if (isEmpty(request.getName())) {
             throw new ValidationException("The supplier name was not informed.");
+        }
+    }
+
+    public SuccessResponse delete(Integer id) {
+        validateInformedId(id);
+        if (productService.existsBySupplierId(id)) {
+            throw new ValidationException("You cannot delete this supplier since it is associated with an existing product.");
+        }
+        supplierRepository.deleteById(id);
+        return SuccessResponse.create("The supplier was deleted successfully");
+    }
+
+    private void validateInformedId(Integer id) {
+        if (isEmpty(id)) {
+            throw new ValidationException("The supplier ID was not informed.");
         }
     }
 }

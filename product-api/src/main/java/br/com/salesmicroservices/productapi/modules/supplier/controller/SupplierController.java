@@ -1,5 +1,6 @@
 package br.com.salesmicroservices.productapi.modules.supplier.controller;
 
+import br.com.salesmicroservices.productapi.config.SuccessResponse;
 import br.com.salesmicroservices.productapi.modules.category.dto.CategoryResponse;
 import br.com.salesmicroservices.productapi.modules.supplier.service.SupplierService;
 import br.com.salesmicroservices.productapi.modules.supplier.dto.SupplierRequest;
@@ -33,5 +34,10 @@ public class SupplierController {
     @GetMapping("name/{name}")
     public List<SupplierResponse> findById(@PathVariable String name) {
         return supplierService.findByName((name));
+    }
+
+    @DeleteMapping("{id}")
+    public SuccessResponse delete(@PathVariable Integer id) {
+        return supplierService.delete(id);
     }
 }
