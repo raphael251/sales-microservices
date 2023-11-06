@@ -1,5 +1,6 @@
 package br.com.salesmicroservices.productapi.modules.category.controller;
 
+import br.com.salesmicroservices.productapi.config.SuccessResponse;
 import br.com.salesmicroservices.productapi.modules.category.dto.CategoryRequest;
 import br.com.salesmicroservices.productapi.modules.category.dto.CategoryResponse;
 import br.com.salesmicroservices.productapi.modules.category.service.CategoryService;
@@ -33,4 +34,10 @@ public class CategoryController {
     public List<CategoryResponse> findById(@PathVariable String description) {
         return categoryService.findByDescription((description));
     }
+
+    @DeleteMapping("{id}")
+    public SuccessResponse delete(@PathVariable Integer id) {
+        return categoryService.delete(id);
+    }
+
 }
