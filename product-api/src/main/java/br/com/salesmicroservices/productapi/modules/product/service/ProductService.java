@@ -1,5 +1,6 @@
 package br.com.salesmicroservices.productapi.modules.product.service;
 
+import br.com.salesmicroservices.productapi.config.SuccessResponse;
 import br.com.salesmicroservices.productapi.config.exception.ValidationException;
 import br.com.salesmicroservices.productapi.modules.category.service.CategoryService;
 import br.com.salesmicroservices.productapi.modules.product.dto.ProductRequest;
@@ -74,9 +75,7 @@ public class ProductService {
     }
 
     public Product findById(Integer id) {
-        if (isEmpty(id)) {
-            throw new ValidationException("The product ID was not informed.");
-        }
+        validateInformedId(id);
         return productRepository.findById(id).orElseThrow(() -> new ValidationException("There is no product for the given ID."));
     }
 
@@ -107,6 +106,26 @@ public class ProductService {
         }
         if (isEmpty(request.getSupplierId())) {
             throw new ValidationException("The supplier ID was not informed.");
+        }
+    }
+
+    public Boolean existsByCategoryId(Integer categoryId) {
+        return productRepository.existsByCategoryId(categoryId);
+    }
+
+    public Boolean existsBySupplierId(Integer supplierId) {
+        return productRepository.existsBySupplierId(supplierId);
+    }
+
+    public SuccessResponse delete(Integer id) {
+        validateInformedId(id);
+        productRepository.deleteById(id);
+        return SuccessResponse.create("The product was deleted successfully");
+    }
+
+    private void validateInformedId(Integer id) {
+        if (isEmpty(id)) {
+            throw new ValidationException("The product ID was not informed.");
         }
     }
 }
