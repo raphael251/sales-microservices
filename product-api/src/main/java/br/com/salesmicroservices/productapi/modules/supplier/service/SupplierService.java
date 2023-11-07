@@ -56,6 +56,15 @@ public class SupplierService {
         return SupplierResponse.of(supplier);
     }
 
+    public SupplierResponse update(SupplierRequest request, Integer id) {
+        validateSupplierNameInformed(request);
+        validateInformedId(id);
+        var supplier = Supplier.of(request);
+        supplier.setId(id);
+        supplierRepository.save(supplier);
+        return SupplierResponse.of(supplier);
+    }
+
     private void validateSupplierNameInformed(SupplierRequest request) {
         if (isEmpty(request.getName())) {
             throw new ValidationException("The supplier name was not informed.");
