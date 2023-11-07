@@ -46,6 +46,11 @@ public class ProductController {
         return productService.findByCategoryId((categoryId));
     }
 
+    @PutMapping("{id}")
+    public ProductResponse update(@RequestBody ProductRequest request, @PathVariable Integer id) {
+        return productService.update(request, id);
+    }
+
     @DeleteMapping("{id}")
     public SuccessResponse delete(@PathVariable Integer id) {
         return productService.delete(id);

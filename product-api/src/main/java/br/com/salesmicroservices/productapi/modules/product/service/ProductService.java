@@ -7,8 +7,6 @@ import br.com.salesmicroservices.productapi.modules.product.dto.ProductRequest;
 import br.com.salesmicroservices.productapi.modules.product.dto.ProductResponse;
 import br.com.salesmicroservices.productapi.modules.product.model.Product;
 import br.com.salesmicroservices.productapi.modules.product.repository.ProductRepository;
-import br.com.salesmicroservices.productapi.modules.supplier.dto.SupplierResponse;
-import br.com.salesmicroservices.productapi.modules.supplier.model.Supplier;
 import br.com.salesmicroservices.productapi.modules.supplier.service.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +24,7 @@ public class ProductService {
     private ProductRepository productRepository;
     @Autowired
     private SupplierService supplierService;
+
     @Autowired
     private CategoryService categoryService;
 
@@ -85,6 +84,18 @@ public class ProductService {
         var category = categoryService.findById(request.getCategoryId());
         var supplier = supplierService.findById((request.getSupplierId()));
         var product = productRepository.save(Product.of(request, category, supplier));
+        return ProductResponse.of(product);
+    }
+
+    public ProductResponse update(ProductRequest request, Integer id) {
+        validateProductDataInformed(request);
+        validateInformedId(id);
+        validateCategoryAndSupplierIdInformed(request);
+        var category = categoryService.findById(request.getCategoryId());
+        var supplier = supplierService.findById((request.getSupplierId()));
+        var product = Product.of(request, category, supplier);
+        product.setId(id);
+        productRepository.save(product);
         return ProductResponse.of(product);
     }
 
