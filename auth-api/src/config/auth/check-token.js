@@ -1,13 +1,13 @@
 import jwt from 'jsonwebtoken';
 import { promisify } from 'util';
 
-import { jwtSecret } from '../constants/secrets.js';
+import { JWT_SECRET } from '../constants/secrets.js';
 import { HTTP_STATUS } from '../constants/httpStatus.js';
 import AuthException from './auth-exception.js';
 
 const emptySpace = ' ';
 
-export default async (req, res, next) => {
+export async function checkToken(req, res, next) {
   try {
     console.group()
     const { authorization } = req.headers;
@@ -21,7 +21,7 @@ export default async (req, res, next) => {
       accessToken = accessToken.split(emptySpace)[1];
     }
 
-    const decoded = await promisify(jwt.verify)(accessToken, jwtSecret);
+    const decoded = await promisify(jwt.verify)(accessToken, JWT_SECRET);
 
     req.authUser = decoded.authUser;
 

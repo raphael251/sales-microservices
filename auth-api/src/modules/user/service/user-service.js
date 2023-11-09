@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import UserRepository from '../repository/user-repository.js';
 import { HTTP_STATUS } from '../../../config/constants/httpStatus.js';
 import UserException from '../exception/user-exception.js';
-import { jwtSecret } from '../../../config/constants/secrets.js';
+import { JWT_SECRET } from '../../../config/constants/secrets.js';
 
 class UserService {
   async findByEmail(req) {
@@ -65,7 +65,7 @@ class UserService {
 
       const authUser = { id: user.id, name: user.name, email: user.email };
       
-      const accessToken = jwt.sign({ authUser }, jwtSecret, { expiresIn: '1d' })
+      const accessToken = jwt.sign({ authUser }, JWT_SECRET, { expiresIn: '1d' })
 
       return {
         status: HTTP_STATUS.SUCCESS,

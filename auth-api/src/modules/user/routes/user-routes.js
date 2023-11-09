@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import UserController from '../controller/user-controller.js'
-import checkToken from '../../../config/auth/check-token.js'
+import { checkToken } from '../../../config/auth/check-token.js'
 
 const router = new Router();
 
