@@ -3,10 +3,24 @@ import { RABBIT_QUEUES } from './queue.js';
 import { RABBIT_MQ_URL } from '../constants/secrets.js';
 
 const HALF_SECOND = 500;
+const HALF_MINUTE = 30000;
+const CONTAINER_ENV = 'container';
 
 export async function connectRabbitMQ() {
+  if (process.env.NODE_ENV === CONTAINER_ENV) {
+    console.info('Waiting for RabbitMQ to start...');
+    setInterval(() => {
+      connectRabbitMQAndCreateQueue();
+    }, HALF_MINUTE)
+  } else {
+    connectRabbitMQAndCreateQueue();
+  }
+}
+
+function connectRabbitMQAndCreateQueue() {
   amqp.connect(RABBIT_MQ_URL, (err, connection) => {
     if (err) throw err;
+    console.info('start creating queues...')
     createQueue(
       connection, 
       RABBIT_QUEUES.PRODUCT_STOCK_UPDATE_QUEUE,
@@ -23,13 +37,14 @@ export async function connectRabbitMQ() {
       connection.close();
     }, HALF_SECOND);
   });
+}
 
-  function createQueue(connection, queue, routingKey, topic) {
-    connection.createChannel((err, channel) => {
-      if (err) throw err;
-      channel.assertExchange(topic, 'topic', { durable: true });
-      channel.assertQueue(queue, { durable: true });
-      channel.bindQueue(queue, topic, routingKey);
-    })
-  }
+function createQueue(connection, queue, routingKey, topic) {
+  connection.createChannel((err, channel) => {
+    if (err) throw err;
+    channel.assertExchange(topic, 'topic', { durable: true });
+    channel.assertQueue(queue, { durable: true });
+    channel.bindQueue(queue, topic, routingKey);
+    console.info(`queue ${queue} and routingKey ${routingKey} created.`)
+  })
 }
