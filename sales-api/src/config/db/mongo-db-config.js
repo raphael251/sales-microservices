@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { MONGO_DB_URL } from '../constants/secrets.js';
 
-export function connect() {
+export function connectMongoDB() {
   mongoose.connect(MONGO_DB_URL);
   
   mongoose.connection.on('connected', () => {
