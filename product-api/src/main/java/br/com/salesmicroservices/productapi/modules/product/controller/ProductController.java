@@ -1,8 +1,7 @@
 package br.com.salesmicroservices.productapi.modules.product.controller;
 
 import br.com.salesmicroservices.productapi.config.SuccessResponse;
-import br.com.salesmicroservices.productapi.modules.product.dto.ProductRequest;
-import br.com.salesmicroservices.productapi.modules.product.dto.ProductResponse;
+import br.com.salesmicroservices.productapi.modules.product.dto.*;
 import br.com.salesmicroservices.productapi.modules.product.service.ProductService;
 import br.com.salesmicroservices.productapi.modules.supplier.dto.SupplierResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,5 +53,15 @@ public class ProductController {
     @DeleteMapping("{id}")
     public SuccessResponse delete(@PathVariable Integer id) {
         return productService.delete(id);
+    }
+
+    @PostMapping("check-stock")
+    public SuccessResponse checkProductsStock(@RequestBody ProductCheckStockRequest request) {
+        return productService.checkProductsStock(request);
+    }
+
+    @GetMapping("{id}/sales")
+    public ProductSalesResponse findProductSales(@PathVariable Integer id) {
+        return productService.findProductSales(id);
     }
 }
