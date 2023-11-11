@@ -1,0 +1,5 @@
+export const ORDER_STATUS = {
+  ACCEPTED: 'ACCEPTED',
+  REJECTED: 'REJECTED',
+  PENDING: 'PENDING'
+}

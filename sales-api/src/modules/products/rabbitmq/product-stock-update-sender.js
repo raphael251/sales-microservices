@@ -8,7 +8,7 @@ export function sendMessageToProductStockUpdateQueue(message) {
     connection.createChannel((err, channel) => {
       if (err) throw err;
       const stringifiedMessage = JSON.stringify(message);
-      console.info(`sending message to product udpate stock: ${message}`)
+      console.info(`sending message to product udpate stock: ${JSON.stringify(message)}`)
       channel.publish(
         RABBIT_QUEUES.PRODUCT_TOPIC,
         RABBIT_QUEUES.PRODUCT_STOCK_UPDATE_ROUTING_KEY,
