@@ -6,9 +6,9 @@ import { checkToken } from './src/config/auth/check-token.js';
 import { connectRabbitMQ } from './src/config/rabbitmq/rabbit-config.js';
 import { orderRouter } from './src/modules/sales/routes/order-routes.js';
 import { tracingMiddleware } from './src/config/tracing/tracing-middleware.js';
+import { PORT } from './src/config/constants/secrets.js';
 
-const app = express();
-const PORT = process.env.PORT || 8082;
+const app = express();;
 
 await connectMongoDB();
 await connectRabbitMQ();
