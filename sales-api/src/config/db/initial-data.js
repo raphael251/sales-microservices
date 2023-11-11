@@ -23,7 +23,9 @@ export async function createInitialData() {
         name: 'User Test',
         email: 'testeuser@gmail.com'
       },
-      status: 'APPROVED'
+      status: 'APPROVED',
+      transactionId: '8dfdc70b-8acc-4423-a9e1-75c0640923d',
+      serviceId: 'e1e52cee-0263-4465-bd6c-b0e396ededd'
     },
     {
       products: [
@@ -41,7 +43,9 @@ export async function createInitialData() {
         name: 'User Test 2',
         email: 'testeuser2@gmail.com'
       },
-      status: 'REJECTED'
+      status: 'REJECTED',
+      transactionId: 'e1e52cee-0263-4465-bd6c-b0e396ededd1',
+      serviceId: '8dfdc70b-8acc-4423-a9e1-75c0640923d4'
     }
   ])
   const orders = await Order.find({});

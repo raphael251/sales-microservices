@@ -12,6 +12,14 @@ const OrderSchema = new Schema({
   status: {
     type: String,
     required: true,
+  },
+  transactionId: {
+    type: String,
+    required: true
+  },
+  serviceId: {
+    type: String,
+    required: true
   }
 }, 
 {

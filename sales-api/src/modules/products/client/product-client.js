@@ -1,23 +1,26 @@
 import axios from "axios";
 import { PRODUCT_API_URL } from "../../../config/constants/secrets.js";
-import { HTTP_STATUS } from "../../../config/constants/httpStatus.js";
+import TracingLogUtil from "../../../config/tracing/tracing-log-util.js";
 
 class ProductClient {
-  async checkProductStock(products, token) {
+  async checkProductStock(products, token, transactionId, serviceId) {
     try {
-      console.info(`sending request to product API with data: ${JSON.stringify(products, undefined, 2)}`)
+      TracingLogUtil.sendingRequest('POST', 'checkProductStock', products, transactionId, serviceId);
       await axios.post(
         `${PRODUCT_API_URL}/check-stock`, 
         { products }, 
         {
           headers: { 
-            Authorization: token
+            Authorization: token,
+            transactionId
           }
         }
       )
       
+      TracingLogUtil.sendingRequestSuccess('POST', 'checkProductStock', products, transactionId, serviceId)
       return true
     } catch (err) {
+      TracingLogUtil.sendingRequestFail('POST', 'checkProductStock', products, transactionId, serviceId)
       return false;
     }
   }

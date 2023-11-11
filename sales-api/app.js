@@ -5,6 +5,7 @@ import { createInitialData } from './src/config/db/initial-data.js';
 import { checkToken } from './src/config/auth/check-token.js';
 import { connectRabbitMQ } from './src/config/rabbitmq/rabbit-config.js';
 import { orderRouter } from './src/modules/sales/routes/order-routes.js';
+import { tracingMiddleware } from './src/config/tracing/tracing-middleware.js';
 
 const app = express();
 const PORT = process.env.PORT || 8082;
@@ -16,6 +17,7 @@ createInitialData();
 
 app.use(express.json())
 
+app.use(tracingMiddleware)
 app.use(checkToken);
 app.use(orderRouter);
 
