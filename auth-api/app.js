@@ -6,7 +6,9 @@ import { PORT } from './src/config/constants/secrets.js';
 
 const app = express();
 
-createInitialData()
+if (process.env.NODE_ENV === 'local') {
+  createInitialData()
+}
 
 app.use(express.json());
 
