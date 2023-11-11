@@ -12,4 +12,6 @@ import java.util.List;
 public class ProductStockDTO {
     private String salesId;
     private List<ProductQuantityDTO> products;
+    private String transactionid;
+    private String serviceid;
 }

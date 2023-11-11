@@ -3,7 +3,6 @@ package br.com.salesmicroservices.productapi.modules.product.controller;
 import br.com.salesmicroservices.productapi.config.SuccessResponse;
 import br.com.salesmicroservices.productapi.modules.product.dto.*;
 import br.com.salesmicroservices.productapi.modules.product.service.ProductService;
-import br.com.salesmicroservices.productapi.modules.supplier.dto.SupplierResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
