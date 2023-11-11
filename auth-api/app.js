@@ -2,10 +2,9 @@ import express from 'express';
 import { createInitialData } from './src/config/db/initial-data.js'
 import userRoutes from './src/modules/user/routes/user-routes.js'
 import { tracingMiddleware } from './src/config/tracing/tracing-middleware.js';
+import { PORT } from './src/config/constants/secrets.js';
 
 const app = express();
-
-const PORT = process.env.PORT || 8080;
 
 createInitialData()
 
