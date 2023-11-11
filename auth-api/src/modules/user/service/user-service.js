@@ -5,6 +5,7 @@ import UserRepository from '../repository/user-repository.js';
 import { HTTP_STATUS } from '../../../config/constants/httpStatus.js';
 import UserException from '../exception/user-exception.js';
 import { JWT_SECRET } from '../../../config/constants/secrets.js';
+import TracingLogUtil from '../../../config/tracing/tracing-log-util.js';
 
 class UserService {
   async findByEmail(req) {
@@ -54,6 +55,9 @@ class UserService {
 
   async getAccessToken(req) {
     try {
+      const { transactionId, serviceId } = req.headers;
+      TracingLogUtil.receivingRequest('POST', 'login', req.body, transactionId, serviceId);
+
       const { email, password } = req.body;
   
       this.validateAccessTokenData(email, password);
@@ -67,10 +71,12 @@ class UserService {
       
       const accessToken = jwt.sign({ authUser }, JWT_SECRET, { expiresIn: '1d' })
 
-      return {
+      const response = {
         status: HTTP_STATUS.SUCCESS,
         accessToken
       }
+      TracingLogUtil.respondingRequest('POST', 'login', response, transactionId, serviceId);
+      return response;
     } catch (err) {
       return {
         status: err.status ? err.status : HTTP_STATUS.INTERNAL_SERVER_ERROR,
