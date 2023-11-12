@@ -6,11 +6,18 @@ import { PORT } from './src/config/constants/secrets.js';
 
 const app = express();
 
-if (process.env.NODE_ENV === 'local') {
+const LOCAL_ENV = 'local';
+
+if (process.env.NODE_ENV === LOCAL_ENV) {
   createInitialData()
 }
 
 app.use(express.json());
+
+app.get('/api/initial-data', async (req, res) => {
+  await createInitialData();
+  return res.json({ message: 'data created.'})
+})
 
 app.use(tracingMiddleware);
 
