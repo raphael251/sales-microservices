@@ -92,6 +92,7 @@ services:
       - RABBIT_MQ_URL=amqp://sales-rabbit:5672
       - PRODUCT_API_URL=http://product-api:8081/api/product
       - PORT=8082
+      - NODE_ENV=container
     ports:
       - 8082:8082
 
@@ -110,6 +111,7 @@ services:
       - DB_USER=admin
       - DB_PASS=123456
       - PORT=8080
+      - NODE_ENV=container
     ports:
       - 8080:8080
 
