@@ -4,22 +4,9 @@ import { RABBIT_MQ_URL } from '../constants/secrets.js';
 import { listenToSalesConfirmationQueue } from '../../modules/sales/rabbitmq/sales-confirmation-listener.js';
 
 const HALF_SECOND = 500;
-const HALF_MINUTE = 30000;
-const CONTAINER_ENV = 'container';
 
 export async function connectRabbitMQ() {
-  if (process.env.NODE_ENV === CONTAINER_ENV) {
-    console.info('Waiting for RabbitMQ to start...');
-    setInterval(() => {
-      connectRabbitMQAndCreateQueue();
-    }, HALF_MINUTE)
-  } else {
-    connectRabbitMQAndCreateQueue();
-  }
-}
-
-function connectRabbitMQAndCreateQueue() {
-  amqp.connect(RABBIT_MQ_URL, (err, connection) => {
+  amqp.connect(RABBIT_MQ_URL, { timeout: 180000 }, (err, connection) => {
     if (err) throw err;
     console.info('start creating queues...')
     createQueue(

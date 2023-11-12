@@ -10,12 +10,29 @@ import { PORT } from './src/config/constants/secrets.js';
 
 const app = express();;
 
-await connectMongoDB();
-await connectRabbitMQ();
 
-createInitialData();
+const HALF_MINUTE = 30000;
+const LOCAL_ENV = 'local';
+
+
+if (process.env.NODE_ENV === LOCAL_ENV) {
+  await connectMongoDB();
+  await connectRabbitMQ();
+  createInitialData();
+} else {
+  console.info('Waiting for RabbitMQ and MongoDB containers to start...');
+  setTimeout(() => {
+    connectMongoDB();
+    connectRabbitMQ();
+  }, HALF_MINUTE);
+}
 
 app.use(express.json())
+
+app.get('/api/initial-data', async (req, res) => {
+  await createInitialData();
+  return res.json({ message: 'data created.'})
+})
 
 app.use(tracingMiddleware)
 app.use(checkToken);
