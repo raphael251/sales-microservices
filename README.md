@@ -31,37 +31,37 @@ The sales API is responsible for managing the orders. It send and receive reques
 
 ### Shared
 
-RabbitMQ 3
-Docker
-Docker Compose
+- RabbitMQ 3
+- Docker
+- Docker Compose
 
 ### Product API
 
-Java 21
-PostgreSQL 11
-Spring Boot 3.1
-Spring Data JPA
-Spring Cloud Feign
-Lombok
-JWT
+- Java 21
+- PostgreSQL 11
+- Spring Boot 3.1
+- Spring Data JPA
+- Spring Cloud Feign
+- Lombok
+- JWT
 
 ### Sales API
 
-Node.js 20
-MongoDB
-Express
-AMQP lib
-Mongoose
-Axios
-JWT
+- Node.js 20
+- MongoDB
+- Express
+- AMQP lib
+- Mongoose
+- Axios
+- JWT
 
 ### Auth API
 
-Node.js 20
-PostgreSQL 11
-Express
-Sequelize
-Bcrypt
-JWT
+- Node.js 20
+- PostgreSQL 11
+- Express
+- Sequelize
+- Bcrypt
+- JWT
 
 ## Running the project
