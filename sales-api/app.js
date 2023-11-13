@@ -34,6 +34,14 @@ app.get('/api/initial-data', async (req, res) => {
   return res.json({ message: 'data created.'})
 })
 
+app.get('/', async (req, res) => {
+  return res.status(200).json({
+    service: 'sales-api',
+    status: 'up',
+    httpStatus: 200
+  });
+});
+
 app.use(tracingMiddleware)
 app.use(checkToken);
 app.use(orderRouter);
