@@ -2,17 +2,18 @@ package br.com.salesmicroservices.productapi.modules.sales.rabbitmq;
 
 import br.com.salesmicroservices.productapi.modules.sales.dto.SalesConfirmationDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class SalesConfirmationSender {
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
+    private final RabbitTemplate rabbitTemplate;
+    private final ObjectMapper objectMapper;
 
     @Value("${app-config.rabbit.exchange.product}")
     private String productTopicExchange;
@@ -22,7 +23,7 @@ public class SalesConfirmationSender {
 
     public void sendSalesConfirmationMessage(SalesConfirmationDTO message) {
         try {
-            log.info("Sending message: {}", new ObjectMapper().writeValueAsString(message));
+            log.info("Sending message: {}", objectMapper.writeValueAsString(message));
             rabbitTemplate.convertAndSend(productTopicExchange, salesConfirmationKey, message);
             log.info("Message was sent successfully.");
         } catch (Exception ex) {

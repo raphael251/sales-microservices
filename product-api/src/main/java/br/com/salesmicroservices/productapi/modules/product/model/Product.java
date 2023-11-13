@@ -2,14 +2,12 @@ package br.com.salesmicroservices.productapi.modules.product.model;
 
 import br.com.salesmicroservices.productapi.modules.category.model.Category;
 import br.com.salesmicroservices.productapi.modules.product.dto.ProductRequest;
-import br.com.salesmicroservices.productapi.modules.supplier.dto.SupplierRequest;
 import br.com.salesmicroservices.productapi.modules.supplier.model.Supplier;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.BeanUtils;
 
 import java.time.LocalDateTime;
 
@@ -21,7 +19,7 @@ import java.time.LocalDateTime;
 @Table(name = "PRODUCT")
 public class Product {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "NAME", nullable = false)

@@ -1,20 +1,19 @@
 package br.com.salesmicroservices.productapi.modules.supplier.controller;
 
 import br.com.salesmicroservices.productapi.config.SuccessResponse;
-import br.com.salesmicroservices.productapi.modules.category.dto.CategoryResponse;
 import br.com.salesmicroservices.productapi.modules.supplier.service.SupplierService;
 import br.com.salesmicroservices.productapi.modules.supplier.dto.SupplierRequest;
 import br.com.salesmicroservices.productapi.modules.supplier.dto.SupplierResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/supplier")
+@AllArgsConstructor
 public class SupplierController {
-    @Autowired
-    private SupplierService supplierService;
+    private final SupplierService supplierService;
 
     @PostMapping
     public SupplierResponse save(@RequestBody SupplierRequest request) {
