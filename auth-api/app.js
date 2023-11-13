@@ -19,17 +19,19 @@ app.get('/api/initial-data', async (req, res) => {
   return res.json({ message: 'data created.'})
 })
 
-app.use(tracingMiddleware);
-
-app.use(userRoutes);
-
-app.get('/api/status', (req, res) => {
+app.get('/', (req, res) => {
   return res.status(200).json({
     service: 'auth-api',
     status: 'up',
     httpStatus: 200
   })
 })
+
+app.use(tracingMiddleware);
+
+app.use(userRoutes);
+
+
 
 app.listen(PORT, () => {
   console.info(`Server started successfully at port ${PORT}`);
