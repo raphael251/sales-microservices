@@ -22,8 +22,8 @@ public class AuthInterceptor implements HandlerInterceptor {
     private final JwtService jwtService;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (isOptions(request)) {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        if (isOptions(request) || isPublicUrl(request.getRequestURI())) {
             return true;
         }
 
@@ -40,7 +40,13 @@ public class AuthInterceptor implements HandlerInterceptor {
         return true;
     }
 
-    private Boolean isOptions(HttpServletRequest request) {
+    private boolean isPublicUrl(String url) {
+        return Urls.PROTECTED_URLS
+                .stream()
+                .noneMatch(url::contains);
+    }
+
+    private boolean isOptions(HttpServletRequest request) {
         return HttpMethod.OPTIONS.name().equals(request.getMethod());
     }
 }
