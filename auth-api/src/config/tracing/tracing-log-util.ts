@@ -1,38 +1,36 @@
-class TracingLogUtil {
-  static receivingRequest(type, name, data, transactionId, serviceId) {
+export class TracingLogUtil {
+  static receivingRequest(type: string, name: string, data: object, transactionId: string, serviceId: string) {
     console.info(`receiving ${type} request to ${name} with data ${
       JSON.stringify(data)
     } | [transactionId: ${transactionId
     } | serviceId: ${serviceId}]`);
   }
 
-  static respondingRequest(type, name, data, transactionId, serviceId) {
+  static respondingRequest(type: string, name: string, data: object, transactionId: string, serviceId: string) {
     console.info(`responding ${type} request to ${name} with data ${
       JSON.stringify(data)
     } | [transactionId: ${transactionId
     } | serviceId: ${serviceId}]`);
   }
 
-  static sendingRequest(type, name, data, transactionId, serviceId) {
+  static sendingRequest(type: string, name: string, data: object, transactionId: string, serviceId: string) {
     console.info(`sending ${type} request to ${name} with data ${
       JSON.stringify(data)
     } | [transactionId: ${transactionId
     } | serviceId: ${serviceId}]`);
   }
 
-  static sendingRequestSuccess(type, name, data, transactionId, serviceId) {
+  static sendingRequestSuccess(type: string, name: string, data: object, transactionId: string, serviceId: string) {
     console.info(`successfully sent ${type} request to ${name} with data ${
       JSON.stringify(data)
     } | [transactionId: ${transactionId
     } | serviceId: ${serviceId}]`);
   }
 
-  static sendingRequestFail(name, data, transactionId, serviceId) {
+  static sendingRequestFail(type: string, name: string, data: object, transactionId: string, serviceId: string) {
     console.info(`unsuccessfully sent ${type} request to ${name} with data ${
       JSON.stringify(data)
     } | [transactionId: ${transactionId
     } | serviceId: ${serviceId}]`);
   }
 }
-
-export default TracingLogUtil;

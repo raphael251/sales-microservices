@@ -1,8 +1,8 @@
 import express from 'express';
-import { createInitialData } from './src/config/db/initial-data.js'
-import userRoutes from './src/modules/user/routes/user-routes.js'
-import { tracingMiddleware } from './src/config/tracing/tracing-middleware.js';
-import { PORT } from './src/config/constants/secrets.js';
+import { createInitialData } from './src/config/db/initial-data'
+import userRoutes from './src/modules/user/routes/user-routes'
+import { tracingMiddleware } from './src/config/tracing/tracing-middleware';
+import { PORT } from './src/config/constants/secrets';
 
 const app = express();
 

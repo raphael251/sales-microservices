@@ -1,16 +1,14 @@
-import Sequelize from 'sequelize';
-import { DB_HOST, DB_NAME, DB_USER, DB_PASS, DB_PORT } from '../constants/secrets.js';
+import { Sequelize } from 'sequelize';
+import { DB_HOST, DB_NAME, DB_USER, DB_PASS, DB_PORT } from '../constants/secrets';
 
 const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASS, {
   host: DB_HOST,
-  port: DB_PORT,
+  port: Number(DB_PORT),
   dialect: 'postgres',
   quoteIdentifiers: false,
   define: {
-    syncOnAssociation: true,
     timestamps: false,
     underscored: true,
-    underscoredAll: true,
     freezeTableName: true
   },
   pool: {

@@ -1,7 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
-import { HTTP_STATUS } from '../constants/httpStatus.js';
+import { HTTP_STATUS } from '../constants/httpStatus';
+import { NextFunction, Request, Response } from 'express';
 
-export function tracingMiddleware(req, res, next) {
+export function tracingMiddleware(req: Request, res: Response, next: NextFunction) {
   let { transactionid } = req.headers;
   if (!transactionid) {
     return res.status(HTTP_STATUS.BAD_REQUEST).json({

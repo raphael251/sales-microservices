@@ -1,20 +1,20 @@
-import User from '../model/user-model.js'
+import User from '../model/user-model'
 
 class UserRepository {
-  async findById(id) {
+  async findById(id: string) {
     try {
       return await User.findOne({ where: { id } });
     } catch (err) {
-      console.error(err.message);
+      console.error(err);
       return null;
     }
   }
 
-  async findByEmail(email) {
+  async findByEmail(email: string) {
     try {
       return await User.findOne({ where: { email } });
     } catch (err) {
-      console.error(err.message);
+      console.error(err);
       return null;
     }
   }
