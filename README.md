@@ -48,6 +48,7 @@ The sales API is responsible for managing the orders. It sends and receives requ
 ### Sales API
 
 - Node.js 20
+- Typescript 5
 - MongoDB
 - Express
 - AMQP lib
