@@ -9,7 +9,7 @@ import { JWT_SECRET } from '../../../config/constants/secrets';
 import { HTTP_STATUS } from '../../../config/constants/httpStatus';
 import { TracingLogUtil } from '../../../config/tracing/tracing-log-util';
 import User from '../model/user-model';
-import { extractTracingFields } from '../../../config/tracing/extract-tracing-fields';
+import { extractTracingFieldsFromHeaders } from '../../../config/tracing/utils';
 import { AuthUser } from '../../../config/auth/auth-user';
 
 class UserService {
@@ -53,7 +53,6 @@ class UserService {
   }
 
   validateAuthenticatedUser(user: User | null, authUser: AuthUser) {
-    console.log('aaaaa', user, authUser)
     if (!authUser || !user || user.id !== authUser.id) {
       throw new UserException(HTTP_STATUS.FORBIDDEN, 'You cannot see this user data.')
     }
@@ -61,7 +60,7 @@ class UserService {
 
   async getAccessToken(req: Request) {
     try {
-      const { transactionId, serviceId } = extractTracingFields(req.headers);
+      const { transactionId, serviceId } = extractTracingFieldsFromHeaders(req.headers);
 
       TracingLogUtil.receivingRequest('POST', 'login', req.body, transactionId, serviceId);
 
