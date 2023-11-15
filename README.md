@@ -59,6 +59,7 @@ The sales API is responsible for managing the orders. It sends and receives requ
 ### Auth API
 
 - Node.js 20
+- Typescript 5
 - PostgreSQL 11
 - Express
 - Sequelize
