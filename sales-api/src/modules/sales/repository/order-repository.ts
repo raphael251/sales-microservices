@@ -3,7 +3,6 @@ import { IOrder, Order } from "../model/order-model";
 
 class OrderRepository {
   async save(order: IOrder): Promise<HydratedDocument<IOrder> | null> {
-    throw new Error()
     try {
       return await Order.create(order);
     } catch (error) {

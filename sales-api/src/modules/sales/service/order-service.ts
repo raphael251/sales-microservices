@@ -10,12 +10,12 @@ import { extractTracingFieldsFromHeaders } from "../../../config/tracing/utils";
 import { UpdateOrderStatusDTO } from "../dto/update-order-status-dto";
 import { CreateOrderRequestDTO } from "../dto/create-order-request-dto";
 import { AuthUser } from "../../../config/auth/auth-user";
-import { CreateOrderResponseDTO } from "../dto/create-order-response-dto";
+import { OrderResponseDTO } from "../dto/order-response-dto";
 import { UnexpectedException } from "../exception/unexpected-exception";
 import { IOrder } from "../model/order-model";
 
 class OrderService {
-  async createOrder({ products }: CreateOrderRequestDTO, authUser: AuthUser, authorization: string, transactionId: string, serviceId: string): Promise<CreateOrderResponseDTO> {
+  async createOrder({ products }: CreateOrderRequestDTO, authUser: AuthUser, authorization: string, transactionId: string, serviceId: string): Promise<OrderResponseDTO> {
     TracingLogUtil.receivingRequest('POST', 'createOrder', { products }, transactionId, serviceId);
 
     const order: IOrder = {
@@ -46,6 +46,7 @@ class OrderService {
     TracingLogUtil.respondingRequest('POST', 'createOrder', { createdOrder }, transactionId, serviceId);
     
     return {
+      id: createdOrder.id,
       products: createdOrder.products,
       user: createdOrder.user,
       status: createdOrder.status,
@@ -72,78 +73,64 @@ class OrderService {
     }
   }
 
-  async findById(req: Request) {
-    const { transactionId, serviceId } = extractTracingFieldsFromHeaders(req.headers);
-    TracingLogUtil.receivingRequest('GET', 'order findById', req.body, transactionId, serviceId);
+  async findById(id: string, transactionId: string, serviceId: string): Promise<OrderResponseDTO> {
+    TracingLogUtil.receivingRequest('GET', 'order findById', { id }, transactionId, serviceId);
 
-    const { id } = req.params;
-    this.validateInformedId(id);
     const existingOrder = await OrderRepository.findById(id);
-    if (!existingOrder) {
-      throw new OrderException('the order was not found.');
-    }
-    
-    const response = {
-      status: HTTP_STATUS.SUCCESS,
-      existingOrder
+
+    if (!existingOrder) throw new OrderException('the order was not found.');
+
+    TracingLogUtil.respondingRequest('GET', 'order findById', { existingOrder }, transactionId, serviceId);
+
+    return {
+      id: existingOrder.id,
+      products: existingOrder.products,
+      user: existingOrder.user,
+      status: existingOrder.status,
+      transactionId: existingOrder.transactionId,
+      serviceId: existingOrder.serviceId
     };
-
-    TracingLogUtil.respondingRequest('GET', 'order findById', response, transactionId, serviceId);
-
-    return response;
   }
 
-  async findAll(req: Request) {
+  async findAll(req: Request): Promise<Array<OrderResponseDTO>> {
     const { transactionId, serviceId } = extractTracingFieldsFromHeaders(req.headers);
     TracingLogUtil.receivingRequest('GET', 'order findAll', {}, transactionId, serviceId);
 
     const orders = await OrderRepository.findAll();
-    if (!orders) {
-      throw new OrderException('no orders were found.');
-    }
-    const response = {
-      status: HTTP_STATUS.SUCCESS,
-      orders
-    };
 
-    TracingLogUtil.respondingRequest('GET', 'order findAll', response, transactionId, serviceId);
+    if (!orders) throw new OrderException('no orders were found.');
+
+    TracingLogUtil.respondingRequest('GET', 'order findAll', { orders }, transactionId, serviceId);
     
-    return response;
+    return orders.map(order => ({
+      id: order.id,
+      products: order.products,
+      user: order.user,
+      status: order.status,
+      transactionId: order.transactionId,
+      serviceId: order.serviceId
+    }));
   }
 
-  async findByProductId(req: Request) {
-    const { transactionId, serviceId } = extractTracingFieldsFromHeaders(req.headers);
-    TracingLogUtil.receivingRequest('GET', 'order findByProductId', req.params, transactionId, serviceId);
+  async findByProductId(productId: string, transactionId: string, serviceId: string): Promise<Array<OrderResponseDTO>> {
+    TracingLogUtil.receivingRequest('GET', 'order findByProductId', { productId }, transactionId, serviceId);
 
-    const { productId } = req.params;
-    this.validateInformedProductId(productId)
     const orders = await OrderRepository.findByProductId(productId);
+
     if (!orders) {
       throw new OrderException('no orders were found.');
     }
 
-    const response = {
-      status: HTTP_STATUS.SUCCESS,
-      salesIds: orders.map(order => order.id)
-    };
+    TracingLogUtil.respondingRequest('GET', 'order findByProductId', { orders }, transactionId, serviceId);
 
-    TracingLogUtil.respondingRequest('GET', 'order findByProductId', response, transactionId, serviceId);
-
-    return response;
-  }
-
-  
-  validateInformedId(id: any) {
-    if (!id) {
-      throw new OrderException('The order ID must be informed.')
-    }
-  }
-
-  
-  validateInformedProductId(id: any) {
-    if (!id) {
-      throw new OrderException('The order productId must be informed.')
-    }
+    return orders.map(order => ({
+      id: order.id,
+      products: order.products,
+      user: order.user,
+      status: order.status,
+      transactionId: order.transactionId,
+      serviceId: order.serviceId
+    }));
   }
 }
 

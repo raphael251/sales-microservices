@@ -44,18 +44,76 @@ class OrderController {
   }
 
   async findById(req: Request, res: Response) {
-    const order = await OrderService.findById(req);
-    return res.status(order.status).json(order);
+    try {
+      const { transactionId, serviceId } = extractTracingFieldsFromHeaders(req.headers);
+  
+      const { id } = req.params;
+  
+      if (!id) {
+        return httpResponsesHelper.badRequest(res, 'The order ID must be informed.');
+      }
+  
+      const order = await OrderService.findById(id, transactionId, serviceId);
+      return httpResponsesHelper.success(res, order);
+    } catch (error) {
+      if (error instanceof OrderException) {
+        return httpResponsesHelper.badRequest(res, { message: error.message })
+      }
+      
+      console.error('error finding order by id', error);
+
+      if (error instanceof UnexpectedException) {
+        return httpResponsesHelper.internalServerError(res)
+      }
+
+      return httpResponsesHelper.internalServerError(res);
+    }
   }
 
   async findAll(req: Request, res: Response) {
-    const order = await OrderService.findAll(req);
-    return res.status(order.status).json(order);
+    try {
+      const orders = await OrderService.findAll(req);
+      return httpResponsesHelper.success(res, orders);
+    } catch (error) {
+      if (error instanceof OrderException) {
+        return httpResponsesHelper.badRequest(res, { message: error.message })
+      }
+      
+      console.error('error finding all orders', error);
+
+      if (error instanceof UnexpectedException) {
+        return httpResponsesHelper.internalServerError(res)
+      }
+
+      return httpResponsesHelper.internalServerError(res);
+    }
   }
 
   async findByProductId(req: Request, res: Response) {
-    const order = await OrderService.findByProductId(req);
-    return res.status(order.status).json(order);
+    try {
+      const { transactionId, serviceId } = extractTracingFieldsFromHeaders(req.headers);
+  
+      const { productId } = req.params;
+  
+      if (!productId) {
+        return httpResponsesHelper.badRequest(res, 'The order productId must be informed.');
+      }
+  
+      const orders = await OrderService.findByProductId(productId, transactionId, serviceId);
+      return httpResponsesHelper.success(res, orders);
+    } catch (error) {
+      if (error instanceof OrderException) {
+        return httpResponsesHelper.badRequest(res, { message: error.message })
+      }
+      
+      console.error('error finding all orders by product id', error);
+
+      if (error instanceof UnexpectedException) {
+        return httpResponsesHelper.internalServerError(res)
+      }
+
+      return httpResponsesHelper.internalServerError(res);
+    }
   }
 }
 
