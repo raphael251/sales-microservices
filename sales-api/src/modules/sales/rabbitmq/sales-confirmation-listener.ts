@@ -1,8 +1,9 @@
 import amqp from 'amqplib';
 import { RABBIT_MQ_URL } from '../../../config/constants/secrets';
 import { RABBIT_QUEUES } from '../../../config/rabbitmq/queue';
-import OrderService from '../service/order-service';
+import { OrderService } from '../service/order-service';
 import { UpdateOrderStatusDTO } from '../dto/update-order-status-dto';
+import { container } from 'tsyringe';
 
 export async function listenToSalesConfirmationQueue() {
   try {
@@ -18,7 +19,10 @@ export async function listenToSalesConfirmationQueue() {
       console.info(`receiving message from queue: ${message.content.toString()}`);
 
       const order: UpdateOrderStatusDTO = parseOrderFromMessage(message.content.toString());
-      OrderService.updateOrderStatus(order);
+
+      const orderService = container.resolve(OrderService)
+
+      orderService.updateOrderStatus(order);
     }, { noAck: true });
   } catch (error) {
     console.error('Error listening to the sales confirmation queue.', error);
