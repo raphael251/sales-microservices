@@ -1,20 +1,21 @@
-import { HTTP_STATUS } from "../../../config/constants/httpStatus";
 import { sendMessageToProductStockUpdateQueue } from "../../products/rabbitmq/product-stock-update-sender";
-import OrderRepository from "../repository/order-repository";
+import { OrderRepository } from "../repository/order-repository";
 import { OrderException } from "../exception/order-exception";
 import { ORDER_STATUS } from "../status/order-status";
-import ProductClient from "../../products/client/product-client";
+import { ProductClient } from "../../products/client/product-client";
 import TracingLogUtil from "../../../config/tracing/tracing-log-util";
-import { Request } from "express";
-import { extractTracingFieldsFromHeaders } from "../../../config/tracing/utils";
 import { UpdateOrderStatusDTO } from "../dto/update-order-status-dto";
 import { CreateOrderRequestDTO } from "../dto/create-order-request-dto";
 import { AuthUser } from "../../../config/auth/auth-user";
 import { OrderResponseDTO } from "../dto/order-response-dto";
 import { UnexpectedException } from "../exception/unexpected-exception";
 import { IOrder } from "../model/order-model";
+import { injectable, singleton } from 'tsyringe';
 
-class OrderService {
+@singleton()
+export class OrderService {
+  constructor (private productClient: ProductClient, private orderRepository: OrderRepository) {}
+
   async createOrder({ products }: CreateOrderRequestDTO, authUser: AuthUser, authorization: string, transactionId: string, serviceId: string): Promise<OrderResponseDTO> {
     TracingLogUtil.receivingRequest('POST', 'createOrder', { products }, transactionId, serviceId);
 
@@ -26,11 +27,11 @@ class OrderService {
       serviceId
     };
 
-    const productsIsAvailableInStock = await ProductClient.checkProductStock(products, authorization, transactionId, serviceId);
+    const productsIsAvailableInStock = await this.productClient.checkProductStock(products, authorization, transactionId, serviceId);
 
     if (!productsIsAvailableInStock) throw new OrderException('the stock is out for the products.')
 
-    const createdOrder = await OrderRepository.save(order);
+    const createdOrder = await this.orderRepository.save(order);
 
     if (!createdOrder) throw new UnexpectedException('Error saving the created order to the database.')
 
@@ -59,13 +60,13 @@ class OrderService {
     try {
       TracingLogUtil.receivingRequest('message', 'updateOrderStatus', order, order.transactionId, order.serviceId);
 
-      const existingOrder = await OrderRepository.findById(order.salesId);
+      const existingOrder = await this.orderRepository.findById(order.salesId);
 
       if (!existingOrder) throw new Error('could not find the existing order.');
 
       if (order.salesStatus && order.salesStatus !== existingOrder.status) {
         existingOrder.status = order.salesStatus;
-        await OrderRepository.save(existingOrder);
+        await this.orderRepository.save(existingOrder);
       }
     } catch (error) {
       console.error('error updating order status.');
@@ -76,7 +77,7 @@ class OrderService {
   async findById(id: string, transactionId: string, serviceId: string): Promise<OrderResponseDTO> {
     TracingLogUtil.receivingRequest('GET', 'order findById', { id }, transactionId, serviceId);
 
-    const existingOrder = await OrderRepository.findById(id);
+    const existingOrder = await this.orderRepository.findById(id);
 
     if (!existingOrder) throw new OrderException('the order was not found.');
 
@@ -92,11 +93,10 @@ class OrderService {
     };
   }
 
-  async findAll(req: Request): Promise<Array<OrderResponseDTO>> {
-    const { transactionId, serviceId } = extractTracingFieldsFromHeaders(req.headers);
+  async findAll(transactionId: string, serviceId: string): Promise<Array<OrderResponseDTO>> {
     TracingLogUtil.receivingRequest('GET', 'order findAll', {}, transactionId, serviceId);
 
-    const orders = await OrderRepository.findAll();
+    const orders = await this.orderRepository.findAll();
 
     if (!orders) throw new OrderException('no orders were found.');
 
@@ -115,7 +115,7 @@ class OrderService {
   async findByProductId(productId: string, transactionId: string, serviceId: string): Promise<Array<OrderResponseDTO>> {
     TracingLogUtil.receivingRequest('GET', 'order findByProductId', { productId }, transactionId, serviceId);
 
-    const orders = await OrderRepository.findByProductId(productId);
+    const orders = await this.orderRepository.findByProductId(productId);
 
     if (!orders) {
       throw new OrderException('no orders were found.');
@@ -133,5 +133,3 @@ class OrderService {
     }));
   }
 }
-
-export default new OrderService();

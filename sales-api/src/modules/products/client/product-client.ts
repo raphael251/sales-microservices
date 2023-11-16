@@ -1,8 +1,10 @@
 import axios, { AxiosError } from "axios";
 import { PRODUCT_API_URL } from "../../../config/constants/secrets";
 import TracingLogUtil from "../../../config/tracing/tracing-log-util";
+import { injectable, singleton } from "tsyringe";
 
-class ProductClient {
+@singleton()
+export class ProductClient {
   async checkProductStock(products: Array<{ productId: number, quantity: number }>, token: string, transactionId: string, serviceId: string) {
     try {
       TracingLogUtil.sendingRequest('POST', 'checkProductStock', products, transactionId, serviceId);
@@ -30,5 +32,3 @@ class ProductClient {
     }
   }
 }
-
-export default new ProductClient();

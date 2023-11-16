@@ -1,3 +1,4 @@
+import 'reflect-metadata'
 import express from 'express'
 
 import { connectMongoDB } from './src/config/db/mongo-db-config'
@@ -8,12 +9,10 @@ import { orderRouter } from './src/modules/sales/routes/order-routes';
 import { tracingMiddleware } from './src/config/tracing/tracing-middleware';
 import { PORT } from './src/config/constants/secrets';
 
-const app = express();;
-
+const app = express();
 
 const HALF_MINUTE = 30000;
 const LOCAL_ENV = 'local';
-
 
 if (process.env.NODE_ENV === LOCAL_ENV) {
   connectRabbitMQ();

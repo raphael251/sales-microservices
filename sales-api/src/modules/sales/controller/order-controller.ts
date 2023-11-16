@@ -1,11 +1,15 @@
 import { Request, Response } from "express";
-import OrderService from "../service/order-service"
+import { OrderService } from "../service/order-service"
 import { extractTracingFieldsFromHeaders } from "../../../config/tracing/utils";
 import { httpResponsesHelper } from "../../../config/express/helpers/http-responses";
 import { OrderException } from "../exception/order-exception";
 import { UnexpectedException } from "../exception/unexpected-exception";
+import { injectable, singleton } from "tsyringe";
 
-class OrderController {
+@injectable()
+export class OrderController {
+  constructor (private orderService: OrderService) {}
+
   async createOrder(req: Request, res: Response) {
     try {
       const { transactionId, serviceId } = extractTracingFieldsFromHeaders(req.headers);
@@ -25,7 +29,7 @@ class OrderController {
         return httpResponsesHelper.internalServerError(res)
       }
   
-      const order = await OrderService.createOrder(orderData, authUser, authorization, transactionId, serviceId);
+      const order = await this.orderService.createOrder(orderData, authUser, authorization, transactionId, serviceId);
       
       return httpResponsesHelper.created(res, order);
     } catch (error) {
@@ -52,8 +56,8 @@ class OrderController {
       if (!id) {
         return httpResponsesHelper.badRequest(res, 'The order ID must be informed.');
       }
-  
-      const order = await OrderService.findById(id, transactionId, serviceId);
+
+      const order = await this.orderService.findById(id, transactionId, serviceId);
       return httpResponsesHelper.success(res, order);
     } catch (error) {
       if (error instanceof OrderException) {
@@ -72,7 +76,8 @@ class OrderController {
 
   async findAll(req: Request, res: Response) {
     try {
-      const orders = await OrderService.findAll(req);
+      const { transactionId, serviceId } = extractTracingFieldsFromHeaders(req.headers);
+      const orders = await this.orderService.findAll(transactionId, serviceId);
       return httpResponsesHelper.success(res, orders);
     } catch (error) {
       if (error instanceof OrderException) {
@@ -99,7 +104,7 @@ class OrderController {
         return httpResponsesHelper.badRequest(res, 'The order productId must be informed.');
       }
   
-      const orders = await OrderService.findByProductId(productId, transactionId, serviceId);
+      const orders = await this.orderService.findByProductId(productId, transactionId, serviceId);
       return httpResponsesHelper.success(res, orders);
     } catch (error) {
       if (error instanceof OrderException) {
@@ -116,5 +121,3 @@ class OrderController {
     }
   }
 }
-
-export default new OrderController();

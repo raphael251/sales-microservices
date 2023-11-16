@@ -2,7 +2,17 @@ import amqp from 'amqplib';
 import { RABBIT_MQ_URL } from '../../../config/constants/secrets';
 import { RABBIT_QUEUES } from '../../../config/rabbitmq/queue';
 
-export async function sendMessageToProductStockUpdateQueue(message: any) {
+type Message = {
+  salesId: string;
+  products: Array<{
+    productId: number;
+    quantity: number;
+  }>;
+  transactionid: string;
+  serviceid: string;
+}
+
+export async function sendMessageToProductStockUpdateQueue(message: Message) {
   try {
     const connection = await amqp.connect(RABBIT_MQ_URL);
 

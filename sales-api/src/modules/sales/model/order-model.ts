@@ -2,7 +2,11 @@ import { Schema, model } from 'mongoose';
 
 export interface IOrder {
   products: Array<{ productId: number, quantity: number }>;
-  user: any;
+  user: {
+    id: number;
+    name: string;
+    email: string;
+  };
   status: string;
   transactionId: string;
   serviceId: string;

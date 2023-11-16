@@ -1,7 +1,9 @@
 import { HydratedDocument } from "mongoose";
 import { IOrder, Order } from "../model/order-model";
+import { injectable, singleton } from "tsyringe";
 
-class OrderRepository {
+@singleton()
+export class OrderRepository {
   async save(order: IOrder): Promise<HydratedDocument<IOrder> | null> {
     try {
       return await Order.create(order);
@@ -38,5 +40,3 @@ class OrderRepository {
     }
   }
 }
-
-export default new OrderRepository();
