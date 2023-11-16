@@ -55,6 +55,7 @@ The sales API is responsible for managing the orders. It sends and receives requ
 - Mongoose
 - Axios
 - JWT
+- Tsynringe + reflect-metadata (DI container)
 
 ### Auth API
 
