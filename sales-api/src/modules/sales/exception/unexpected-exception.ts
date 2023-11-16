@@ -1,4 +1,4 @@
-export class OrderException extends Error {
+export class UnexpectedException extends Error {
   constructor(message: string) {
     super(message);
     this.message = message;

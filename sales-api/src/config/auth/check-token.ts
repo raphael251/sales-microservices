@@ -28,15 +28,15 @@ export async function checkToken(req: Request, res: Response, next: NextFunction
     req.authUser = authUser;
 
     return next();
-  } catch (err) {
-    if (err instanceof AuthException) {
-      return res.status(err.status).json({
-        status: err.status,
-        message: err.message
+  } catch (error) {
+    if (error instanceof AuthException) {
+      return res.status(error.status).json({
+        status: error.status,
+        message: error.message
       })
     }
 
-    console.error(err)
+    console.error(error)
 
     return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       status: HTTP_STATUS.INTERNAL_SERVER_ERROR,

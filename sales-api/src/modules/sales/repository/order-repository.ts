@@ -3,10 +3,11 @@ import { IOrder, Order } from "../model/order-model";
 
 class OrderRepository {
   async save(order: IOrder): Promise<HydratedDocument<IOrder> | null> {
+    throw new Error()
     try {
       return await Order.create(order);
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
       return null;
     }
   }
@@ -14,8 +15,8 @@ class OrderRepository {
   async findById(id: string): Promise<HydratedDocument<IOrder> | null> {
     try {
       return await Order.findById(id);
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
       return null;
     }
   }
@@ -23,8 +24,8 @@ class OrderRepository {
   async findAll(): Promise<Array<HydratedDocument<IOrder>> | null> {
     try {
       return await Order.find({});
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
       return null;
     }
   }
@@ -32,8 +33,8 @@ class OrderRepository {
   async findByProductId(productId: string): Promise<Array<HydratedDocument<IOrder>> | null> {
     try {
       return await Order.find({ 'products.productId': Number(productId) });
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
       return null;
     }
   }

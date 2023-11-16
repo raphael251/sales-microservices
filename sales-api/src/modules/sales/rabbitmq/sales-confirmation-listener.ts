@@ -2,6 +2,7 @@ import amqp from 'amqplib';
 import { RABBIT_MQ_URL } from '../../../config/constants/secrets';
 import { RABBIT_QUEUES } from '../../../config/rabbitmq/queue';
 import OrderService from '../service/order-service';
+import { UpdateOrderStatusDTO } from '../dto/update-order-status-dto';
 
 export async function listenToSalesConfirmationQueue() {
   try {
@@ -14,10 +15,20 @@ export async function listenToSalesConfirmationQueue() {
     await channel.consume(RABBIT_QUEUES.SALES_CONFIRMATION_QUEUE, (message) => {
       if (!message) throw new Error('Error receiving message from the sales confirmation queue');
 
-      console.info(`receiving message from queue: ${message.content.toString()}`)
-      OrderService.updateOrder(message.content.toString())
+      console.info(`receiving message from queue: ${message.content.toString()}`);
+
+      const order: UpdateOrderStatusDTO = parseOrderFromMessage(message.content.toString());
+      OrderService.updateOrderStatus(order);
     }, { noAck: true });
   } catch (error) {
-    console.error('Error listening to the sales confirmation queue.', error)
+    console.error('Error listening to the sales confirmation queue.', error);
+  }
+}
+
+function parseOrderFromMessage(orderMessage: string): UpdateOrderStatusDTO {
+  try {
+    return JSON.parse(orderMessage);
+  } catch (error) {
+    throw new Error(`could not parse order message from queue: ${orderMessage}`);
   }
 }
