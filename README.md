@@ -16,6 +16,10 @@ The product API is responsible for managing the products, categories, and suppli
 
 The sales API is responsible for managing the orders. It sends and receives requests and messages from the product API. It sends requests to get info about the product stock before sending the actual order message and sends the order message when the first check of the stock is okay.
 
+## Macro Architecture
+
+![macro architecture](content/macro-architecture.png)
+
 ## The workflow
 
 1. The token is generated in the auth API.
@@ -68,3 +72,5 @@ The sales API is responsible for managing the orders. It sends and receives requ
 - JWT
 
 ## Running the project
+
+You can run this project by running ```docker compose up --build``` to build all the images and start all the applications.
