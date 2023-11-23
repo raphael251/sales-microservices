@@ -26,7 +26,7 @@ export class UserService {
       throw new UserException(HTTP_STATUS.UNAUTHORIZED, 'Email or password incorrect.')
     }
 
-    if (!(await this.hashService.isTheValuesEqual(password, user.dataValues.password))) {
+    if (!(await this.hashService.isTheValuesEqual(password, user.password))) {
       throw new UserException(HTTP_STATUS.UNAUTHORIZED, 'Email or password incorrect.')
     }
 
