@@ -3,8 +3,11 @@ import express from 'express';
 import userRoutes from './src/modules/user/routes/user-routes'
 import { tracingMiddleware } from './src/config/tracing/tracing-middleware';
 import { PORT } from './src/config/constants/secrets';
+import { connectDatabase } from './src/config/db/db-config';
 
 const app = express();
+
+connectDatabase()
 
 app.use(express.json());
 
@@ -17,7 +20,7 @@ app.get('/', (req, res) => {
 })
 
 app.use(tracingMiddleware);
-app.use(userRoutes);
+app.use('/api/v1/users', userRoutes);
 
 app.listen(PORT, () => {
   console.info(`Server started successfully at port ${PORT}`);

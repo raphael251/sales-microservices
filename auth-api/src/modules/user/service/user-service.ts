@@ -1,36 +1,21 @@
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 import { UserRepository } from '../repository/user-repository';
 import { UserException } from '../exception/user-exception';
-import { JWT_SECRET } from '../../../config/constants/secrets';
 import { HTTP_STATUS } from '../../../config/constants/httpStatus';
 import { TracingLogUtil } from '../../../config/tracing/tracing-log-util';
 import { AuthUser } from '../../../config/auth/auth-user';
 import { UserResponseDTO } from '../dto/user-response-dto';
 import { AccessTokenResponseDTO } from '../dto/access-token-response-dto';
 import { singleton } from 'tsyringe'
+import { HashService } from '../../auth/service/hash-service';
+import { JwtService } from '../../auth/service/jwt-service';
 
 @singleton()
 export class UserService {
-  constructor(private userRepository: UserRepository) {}
-
-  async findByEmail(email: string, authUser: AuthUser): Promise<UserResponseDTO> {
-    const user = await this.userRepository.findByEmail(email);
-
-    if (!user) {
-      throw new UserException(HTTP_STATUS.BAD_REQUEST, 'User was not found.')
-    }
-    
-    if (user.id !== authUser.id) {
-      throw new UserException(HTTP_STATUS.FORBIDDEN, 'You cannot see this user data.')
-    }
-
-    return {
-      id: user.id,
-      name: user.name,
-      email: user.email
-    }
-  }
+  constructor(
+    private userRepository: UserRepository, 
+    private hashService: HashService,
+    private jwtService: JwtService
+  ) {}
 
   async getAccessToken(email: string, password: string, transactionId: string, serviceId: string): Promise<AccessTokenResponseDTO> {
     TracingLogUtil.receivingRequest('POST', 'login', { email, password }, transactionId, serviceId);
@@ -38,10 +23,12 @@ export class UserService {
     const user = await this.userRepository.findByEmail(email);
 
     if (!user) {
-      throw new UserException(HTTP_STATUS.BAD_REQUEST, 'User was not found.')
+      throw new UserException(HTTP_STATUS.UNAUTHORIZED, 'Email or password incorrect.')
     }
 
-    await this.validatePassword(password, user.dataValues.password);
+    if (!(await this.hashService.isTheValuesEqual(password, user.dataValues.password))) {
+      throw new UserException(HTTP_STATUS.UNAUTHORIZED, 'Email or password incorrect.')
+    }
 
     const authUser: AuthUser = { 
       id: user.id, 
@@ -49,16 +36,24 @@ export class UserService {
       email: user.email
     };
     
-    const accessToken = jwt.sign({ authUser }, JWT_SECRET, { expiresIn: '1d' });
+    const accessToken = this.jwtService.sign({ authUser });
 
     TracingLogUtil.respondingRequest('POST', 'login', { accessToken }, transactionId, serviceId);
 
     return { accessToken };
   }
 
-  async validatePassword(password: string, hashPassword: string) {
-    if (!(await bcrypt.compare(password, hashPassword))) {
-      throw new UserException(HTTP_STATUS.UNAUTHORIZED, 'Email or password incorrect.')
+  async findByEmail(email: string): Promise<UserResponseDTO> {
+    const user = await this.userRepository.findByEmail(email);
+
+    if (!user) {
+      throw new UserException(HTTP_STATUS.BAD_REQUEST, 'User was not found.')
+    }
+
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email
     }
   }
 }

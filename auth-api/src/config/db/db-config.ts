@@ -16,14 +16,17 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASS, {
   }
 });
 
-sequelize
-  .authenticate()
-  .then(() => {
+export async function connectDatabase(): Promise<void> {
+  try {
+    await sequelize.authenticate()
     console.info('Connection has been stablished!');
-  })
-  .catch((err) => {
+  } catch (error) {
     console.error('Unable to connect to the database.')
-    console.error(err.message)
-  });
+    console.error(error)
+  }
+
+}
+
+
 
 export default sequelize

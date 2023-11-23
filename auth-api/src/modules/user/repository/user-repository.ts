@@ -3,7 +3,7 @@ import User from '../model/user-model'
 
 @singleton()
 export class UserRepository {
-  async findById(id: string) {
+  async findById(id: string): Promise<User | null> {
     try {
       return await User.findOne({ where: { id } });
     } catch (err) {
@@ -12,7 +12,7 @@ export class UserRepository {
     }
   }
 
-  async findByEmail(email: string) {
+  async findByEmail(email: string): Promise<User | null> {
     try {
       return await User.findOne({ where: { email } });
     } catch (err) {

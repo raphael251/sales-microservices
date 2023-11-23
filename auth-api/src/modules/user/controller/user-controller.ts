@@ -41,15 +41,6 @@ export class UserController {
 
   async findByEmail(req: Request, res: Response) {
     try {
-      const { email } = req.params;
-  
-      if (!email) {
-        return res.status(HTTP_STATUS.BAD_REQUEST).json({
-          status: HTTP_STATUS.BAD_REQUEST,
-          message: 'User email was not informed.'
-        })
-      }
-  
       const authUser = req.authUser;
   
       if (!authUser) {
@@ -59,7 +50,8 @@ export class UserController {
         })
       }
   
-      const user = await this.userService.findByEmail(email, authUser);
+      const user = await this.userService.findByEmail(authUser.email);
+
       return res.status(HTTP_STATUS.SUCCESS).json(user);
     } catch (error) {
       if (error instanceof UserException) {
