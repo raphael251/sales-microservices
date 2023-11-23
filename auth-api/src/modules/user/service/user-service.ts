@@ -1,19 +1,21 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { Request } from 'express';
-import UserRepository from '../repository/user-repository';
+import { UserRepository } from '../repository/user-repository';
 import { UserException } from '../exception/user-exception';
 import { JWT_SECRET } from '../../../config/constants/secrets';
 import { HTTP_STATUS } from '../../../config/constants/httpStatus';
 import { TracingLogUtil } from '../../../config/tracing/tracing-log-util';
-import { extractTracingFieldsFromHeaders } from '../../../config/tracing/utils';
 import { AuthUser } from '../../../config/auth/auth-user';
 import { UserResponseDTO } from '../dto/user-response-dto';
 import { AccessTokenResponseDTO } from '../dto/access-token-response-dto';
+import { singleton } from 'tsyringe'
 
-class UserService {
+@singleton()
+export class UserService {
+  constructor(private userRepository: UserRepository) {}
+
   async findByEmail(email: string, authUser: AuthUser): Promise<UserResponseDTO> {
-    const user = await UserRepository.findByEmail(email);
+    const user = await this.userRepository.findByEmail(email);
 
     if (!user) {
       throw new UserException(HTTP_STATUS.BAD_REQUEST, 'User was not found.')
@@ -33,7 +35,7 @@ class UserService {
   async getAccessToken(email: string, password: string, transactionId: string, serviceId: string): Promise<AccessTokenResponseDTO> {
     TracingLogUtil.receivingRequest('POST', 'login', { email, password }, transactionId, serviceId);
 
-    const user = await UserRepository.findByEmail(email);
+    const user = await this.userRepository.findByEmail(email);
 
     if (!user) {
       throw new UserException(HTTP_STATUS.BAD_REQUEST, 'User was not found.')
@@ -60,5 +62,3 @@ class UserService {
     }
   }
 }
-
-export default new UserService();

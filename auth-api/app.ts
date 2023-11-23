@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import express from 'express';
 import userRoutes from './src/modules/user/routes/user-routes'
 import { tracingMiddleware } from './src/config/tracing/tracing-middleware';

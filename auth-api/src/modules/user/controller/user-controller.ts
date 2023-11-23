@@ -1,13 +1,16 @@
-import { AuthUser } from '../../../config/auth/auth-user';
+import { singleton } from 'tsyringe';
 import { HTTP_STATUS } from '../../../config/constants/httpStatus';
 import { httpResponsesHelper } from '../../../config/express/helpers/http-responses';
 import { extractTracingFieldsFromHeaders } from '../../../config/tracing/utils';
 import { UnexpectedException } from '../exception/unexpected-exception';
 import { UserException } from '../exception/user-exception';
-import UserService from '../service/user-service';
+import { UserService } from '../service/user-service';
 import { Request, Response } from 'express';
 
-class UserController {
+@singleton()
+export class UserController {
+  constructor(private userService: UserService) {}
+
   async getAccessToken(req: Request, res: Response) {
     try {
       const { email, password } = req.body;
@@ -18,7 +21,7 @@ class UserController {
       
       const { transactionId, serviceId } = extractTracingFieldsFromHeaders(req.headers);
 
-      const accessToken = await UserService.getAccessToken(email, password, transactionId, serviceId);
+      const accessToken = await this.userService.getAccessToken(email, password, transactionId, serviceId);
 
       return res.status(HTTP_STATUS.SUCCESS).json(accessToken);
     } catch (error) {
@@ -56,7 +59,7 @@ class UserController {
         })
       }
   
-      const user = await UserService.findByEmail(email, authUser);
+      const user = await this.userService.findByEmail(email, authUser);
       return res.status(HTTP_STATUS.SUCCESS).json(user);
     } catch (error) {
       if (error instanceof UserException) {
@@ -73,5 +76,3 @@ class UserController {
     }
   }
 }
-
-export default new UserController();

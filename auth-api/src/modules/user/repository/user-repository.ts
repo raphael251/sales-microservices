@@ -1,6 +1,8 @@
+import { singleton } from 'tsyringe';
 import User from '../model/user-model'
 
-class UserRepository {
+@singleton()
+export class UserRepository {
   async findById(id: string) {
     try {
       return await User.findOne({ where: { id } });
@@ -19,5 +21,3 @@ class UserRepository {
     }
   }
 }
-
-export default new UserRepository();
