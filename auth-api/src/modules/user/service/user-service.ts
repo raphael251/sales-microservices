@@ -8,6 +8,8 @@ import { AccessTokenResponseDTO } from '../dto/access-token-response-dto';
 import { singleton } from 'tsyringe'
 import { HashService } from '../../auth/service/hash-service';
 import { JwtService } from '../../auth/service/jwt-service';
+import { CreateUserRequestDTO } from '../dto/create-user-request-dto';
+import { UnexpectedException } from '../exception/unexpected-exception';
 
 @singleton()
 export class UserService {
@@ -16,6 +18,24 @@ export class UserService {
     private hashService: HashService,
     private jwtService: JwtService
   ) {}
+
+  async create(userToCreate: CreateUserRequestDTO): Promise<UserResponseDTO> {
+    const existingUser = await this.userRepository.findByEmail(userToCreate.email)
+
+    if (!!existingUser) throw new UserException(HTTP_STATUS.BAD_REQUEST, 'There is already a user using this email address.')
+
+    const hashedPassword = await this.hashService.hash(userToCreate.password)
+
+    const user = await this.userRepository.create(userToCreate.name, userToCreate.email, hashedPassword)
+
+    if (!user) throw new UnexpectedException('Could not create user')
+
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email
+    };
+  }
 
   async getAccessToken(email: string, password: string, transactionId: string, serviceId: string): Promise<AccessTokenResponseDTO> {
     TracingLogUtil.receivingRequest('POST', 'login', { email, password }, transactionId, serviceId);

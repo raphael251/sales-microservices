@@ -7,6 +7,7 @@ const userController = container.resolve(UserController)
 
 const router = Router();
 
+router.post('/', (req: Request, res: Response) => userController.create(req, res))
 router.post('/auth', (req: Request, res: Response) => userController.getAccessToken(req, res))
 router.use(checkToken);
 router.get('/profile', (req: Request, res: Response) => userController.findByEmail(req, res))

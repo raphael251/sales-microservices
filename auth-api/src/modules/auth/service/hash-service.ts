@@ -6,4 +6,8 @@ export class HashService {
   async isTheValuesEqual(value: string, hashedValue: string): Promise<boolean> {
     return bcrypt.compare(value, hashedValue)
   }
+
+  async hash(value: string): Promise<string> {
+    return bcrypt.hash(value, 10);
+  } 
 }

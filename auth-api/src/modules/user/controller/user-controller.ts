@@ -11,6 +11,32 @@ import { Request, Response } from 'express';
 export class UserController {
   constructor(private userService: UserService) {}
 
+  async create(req: Request, res: Response) {
+    try {
+      const { name, email, password } = req.body;
+
+      if (!name) throw new UserException(HTTP_STATUS.UNAUTHORIZED, 'Name must be informed.')
+      if (!email) throw new UserException(HTTP_STATUS.UNAUTHORIZED, 'Email must be informed.')
+      if (!password) throw new UserException(HTTP_STATUS.UNAUTHORIZED, 'Password must be informed.')
+
+      const user = await this.userService.create({ name, email, password })
+
+      return httpResponsesHelper.success(res, user)
+    } catch (error) {
+      if (error instanceof UserException) {
+        return httpResponsesHelper.badRequest(res, { message: error.message })
+      }
+      
+      console.error('error getting access token', error);
+
+      if (error instanceof UnexpectedException) {
+        return httpResponsesHelper.internalServerError(res)
+      }
+
+      return httpResponsesHelper.internalServerError(res);
+    }
+  }
+
   async getAccessToken(req: Request, res: Response) {
     try {
       const { email, password } = req.body;
