@@ -59,6 +59,7 @@ The sales API is responsible for managing the orders. It sends and receives requ
 - Mongoose
 - Axios
 - JWT
+- Jest
 - Tsynringe + reflect-metadata (DI container)
 
 ### Auth API
@@ -70,6 +71,8 @@ The sales API is responsible for managing the orders. It sends and receives requ
 - Sequelize
 - Bcrypt
 - JWT
+- Jest
+- Tsynringe + reflect-metadata (DI container)
 
 ## Running the project
 
