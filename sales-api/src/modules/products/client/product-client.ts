@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 import { PRODUCT_API_URL } from "../../../config/constants/secrets";
 import TracingLogUtil from "../../../config/tracing/tracing-log-util";
-import { injectable, singleton } from "tsyringe";
+import { singleton } from "tsyringe";
 
 @singleton()
 export class ProductClient {
@@ -26,7 +26,7 @@ export class ProductClient {
         TracingLogUtil.sendingRequestSuccess('POST', 'checkProductStock', { products, response: { status: error.response?.status, data: error.response?.data } }, transactionId, serviceId)
         return false
       }
-
+      
       TracingLogUtil.sendingRequestFail('POST', 'checkProductStock', products, transactionId, serviceId);
       throw new Error('Error requesting the products API');
     }

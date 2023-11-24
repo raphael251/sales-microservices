@@ -1,4 +1,4 @@
-import { sendMessageToProductStockUpdateQueue } from "../../products/rabbitmq/product-stock-update-sender";
+import { ProductStockUpdateMessageSender } from "../../products/rabbitmq/product-stock-update-message-sender";
 import { OrderRepository } from "../repository/order-repository";
 import { OrderException } from "../exception/order-exception";
 import { ORDER_STATUS } from "../status/order-status";
@@ -10,11 +10,15 @@ import { AuthUser } from "../../../config/auth/auth-user";
 import { OrderResponseDTO } from "../dto/order-response-dto";
 import { UnexpectedException } from "../exception/unexpected-exception";
 import { IOrder } from "../model/order-model";
-import { injectable, singleton } from 'tsyringe';
+import { singleton } from 'tsyringe';
 
 @singleton()
 export class OrderService {
-  constructor (private productClient: ProductClient, private orderRepository: OrderRepository) {}
+  constructor (
+    private productClient: ProductClient, 
+    private orderRepository: OrderRepository,
+    private productStockUpdateMessageSender: ProductStockUpdateMessageSender
+  ) {}
 
   async createOrder({ products }: CreateOrderRequestDTO, authUser: AuthUser, authorization: string, transactionId: string, serviceId: string): Promise<OrderResponseDTO> {
     TracingLogUtil.receivingRequest('POST', 'createOrder', { products }, transactionId, serviceId);
@@ -42,7 +46,7 @@ export class OrderService {
       serviceid: serviceId
     }
 
-    sendMessageToProductStockUpdateQueue(message);
+    this.productStockUpdateMessageSender.sendMessageToProductStockUpdateQueue(message);
 
     TracingLogUtil.respondingRequest('POST', 'createOrder', { createdOrder }, transactionId, serviceId);
     
