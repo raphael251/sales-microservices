@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "NODE_ENV=local ts-node-dev --transpile-only --respawn --files app.ts",
     "debug": "NODE_ENV=local ts-node-dev --transpile-only --respawn --inspect=4321 --files app.ts",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
     "build": "tsc"
   },
   "keywords": [],
