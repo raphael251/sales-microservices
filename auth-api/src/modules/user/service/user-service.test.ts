@@ -5,7 +5,6 @@ import { JwtService } from "../../auth/service/jwt-service";
 import User from "../model/user-model";
 import { UserException } from "../exception/user-exception";
 import { HTTP_STATUS } from "../../../config/constants/httpStatus";
-import { AuthUser } from "../../../config/auth/auth-user";
 
 function makeSUT() {
   const userRepository: jest.Mocked<UserRepository> = {
