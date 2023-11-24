@@ -76,4 +76,10 @@ The sales API is responsible for managing the orders. It sends and receives requ
 
 ## Running the project
 
-You can run this project by running ```docker compose up --build``` to build all the images and start all the applications.
+You can run this project by running `docker compose up --build` to build all the images and start all the applications.
+
+## Running tests
+
+### Auth and Sales APIs
+
+You can run this the tests for the Auth and Sales API by running `npm run test` or `npm run test:coverage` on each project's folder, after installing the dependencies with the `npm install` command.
