@@ -10,6 +10,37 @@ function makeSUT() {
 }
 
 describe('UserRepository', () => {
+  describe('create', () => {
+    test('should return null if the user model throws an error', async () => {
+      const { sut } = makeSUT();
+
+      jest.spyOn(User, 'create').mockImplementationOnce(() => {
+        throw new Error('some error');
+      });
+
+      const response = await sut.create('any-name', 'any-email', 'any-password');
+
+      expect(response).toBeNull();
+    });
+
+    test('should return the created user returned by the model if everything is okay', async () => {
+      const { sut } = makeSUT();
+
+      const createdUser = {
+        id: 1,
+        name: 'any-name',
+        email: 'any-email@mail.com',
+        password: 'any-password',
+      } as User
+
+      jest.spyOn(User, 'create').mockResolvedValueOnce(createdUser);
+
+      const response = await sut.create('any-name', 'any-email', 'any-password');
+
+      expect(response).toEqual(createdUser);
+    });
+  })
+
   describe('findById', () => {
     test('should return null if the user model throws an error', async () => {
       const { sut } = makeSUT();
