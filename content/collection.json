@@ -1,0 +1,1106 @@
+{
+	"info": {
+		"_postman_id": "5cd8e915-84a7-4c9e-a9ee-1722d62572f1",
+		"name": "Sales Microservices",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14007720"
+	},
+	"item": [
+		{
+			"name": "auth-api",
+			"item": [
+				{
+					"name": "check api status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{auth-api-base-url}}/",
+							"host": [
+								"{{auth-api-base-url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"access_token\", \"Bearer \" + pm.response.json().accessToken);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "transactionid",
+								"value": "{{$guid}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"raphael.t@gmail.com\",\r\n    \"password\": \"12345\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{auth-api-base-url}}/api/v1/users/auth",
+							"host": [
+								"{{auth-api-base-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"auth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get user profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							},
+							{
+								"key": "transactionid",
+								"value": "{{$guid}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{auth-api-base-url}}/api/v1/users/profile",
+							"host": [
+								"{{auth-api-base-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "transactionid",
+								"value": "{{$guid}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Raphael\",\r\n    \"email\": \"raphael.t@gmail.com\",\r\n    \"password\": \"12345\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{auth-api-base-url}}/api/v1/users",
+							"host": [
+								"{{auth-api-base-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "product-api",
+			"item": [
+				{
+					"name": "category",
+					"item": [
+						{
+							"name": "add category",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "transactionid",
+										"value": "{{$guid}}",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"description\": \"Instruments\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{product-api-base-url}}/api/categories",
+									"host": [
+										"{{product-api-base-url}}"
+									],
+									"path": [
+										"api",
+										"categories"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "find one category by id",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "transactionid",
+										"value": "{{$guid}}",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{product-api-base-url}}/api/categories/1001",
+									"host": [
+										"{{product-api-base-url}}"
+									],
+									"path": [
+										"api",
+										"categories",
+										"1001"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "find categories by description",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "transactionid",
+										"value": "{{$guid}}",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{product-api-base-url}}/api/categories/description/M",
+									"host": [
+										"{{product-api-base-url}}"
+									],
+									"path": [
+										"api",
+										"categories",
+										"description",
+										"M"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "find all categories",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "transactionid",
+										"value": "{{$guid}}",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{product-api-base-url}}/api/categories",
+									"host": [
+										"{{product-api-base-url}}"
+									],
+									"path": [
+										"api",
+										"categories"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update one category by id",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "transactionid",
+										"value": "{{$guid}}",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"description\": \"Comic Bucks\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{product-api-base-url}}/api/categories/1000",
+									"host": [
+										"{{product-api-base-url}}"
+									],
+									"path": [
+										"api",
+										"categories",
+										"1000"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete one category by id",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "transactionid",
+										"value": "{{$guid}}",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{product-api-base-url}}/api/categories/1001",
+									"host": [
+										"{{product-api-base-url}}"
+									],
+									"path": [
+										"api",
+										"categories",
+										"1001"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "product",
+					"item": [
+						{
+							"name": "add product",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "transactionid",
+										"value": "{{$guid}}",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Pirates of the Caribbean\",\r\n    \"quantity_available\": 10,\r\n    \"supplierId\": 1000,\r\n    \"categoryId\": 1000\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{product-api-base-url}}/api/products",
+									"host": [
+										"{{product-api-base-url}}"
+									],
+									"path": [
+										"api",
+										"products"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "find one product by id",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "transactionid",
+										"value": "{{$guid}}",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{product-api-base-url}}/api/products/1000",
+									"host": [
+										"{{product-api-base-url}}"
+									],
+									"path": [
+										"api",
+										"products",
+										"1000"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "find products by name",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "transactionid",
+										"value": "{{$guid}}",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{product-api-base-url}}/api/products/name/cri",
+									"host": [
+										"{{product-api-base-url}}"
+									],
+									"path": [
+										"api",
+										"products",
+										"name",
+										"cri"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "find products by supplier id",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "transactionid",
+										"value": "{{$guid}}",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{product-api-base-url}}/api/products/suppliers/1000",
+									"host": [
+										"{{product-api-base-url}}"
+									],
+									"path": [
+										"api",
+										"products",
+										"suppliers",
+										"1000"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "find products by category id",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "transactionid",
+										"value": "{{$guid}}",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{product-api-base-url}}/api/products/categories/1000",
+									"host": [
+										"{{product-api-base-url}}"
+									],
+									"path": [
+										"api",
+										"products",
+										"categories",
+										"1000"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "find all products",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}",
+										"type": "text"
+									},
+									{
+										"key": "transactionid",
+										"value": "{{$guid}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{product-api-base-url}}/api/products",
+									"host": [
+										"{{product-api-base-url}}"
+									],
+									"path": [
+										"api",
+										"products"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update one product by id",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}",
+										"type": "text"
+									},
+									{
+										"key": "transactionid",
+										"value": "{{$guid}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n        \"name\": \"Crise nas Infinitas Terras\",\r\n        \"supplierId\": 1000,\r\n        \"categoryId\": 1000,\r\n        \"quantity_available\": 8\r\n    }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{product-api-base-url}}/api/products/1000",
+									"host": [
+										"{{product-api-base-url}}"
+									],
+									"path": [
+										"api",
+										"products",
+										"1000"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete one supplier by id Copy",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}",
+										"type": "text"
+									},
+									{
+										"key": "transactionid",
+										"value": "{{$guid}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{product-api-base-url}}/api/products/1001",
+									"host": [
+										"{{product-api-base-url}}"
+									],
+									"path": [
+										"api",
+										"products",
+										"1001"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "check stock",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}",
+										"type": "text"
+									},
+									{
+										"key": "transactionid",
+										"value": "{{$guid}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"products\": [\r\n    {\r\n      \"productId\": 1000,\r\n      \"quantity\": 2\r\n    },\r\n    {\r\n      \"productId\": 1001,\r\n      \"quantity\": 5\r\n    },\r\n    {\r\n      \"productId\": 1002,\r\n      \"quantity\": 1\r\n    }\r\n  ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{product-api-base-url}}/api/products/check-stock",
+									"host": [
+										"{{product-api-base-url}}"
+									],
+									"path": [
+										"api",
+										"products",
+										"check-stock"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "find all sales by product id",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}",
+										"type": "text"
+									},
+									{
+										"key": "transactionid",
+										"value": "{{$guid}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{product-api-base-url}}/api/products/1000/sales",
+									"host": [
+										"{{product-api-base-url}}"
+									],
+									"path": [
+										"api",
+										"products",
+										"1000",
+										"sales"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "supplier",
+					"item": [
+						{
+							"name": "add supplier",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "transactionid",
+										"value": "{{$guid}}",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Gianinni\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{product-api-base-url}}/api/suppliers",
+									"host": [
+										"{{product-api-base-url}}"
+									],
+									"path": [
+										"api",
+										"suppliers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "find one supplier by id",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "transactionid",
+										"value": "{{$guid}}",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{product-api-base-url}}/api/suppliers/1000",
+									"host": [
+										"{{product-api-base-url}}"
+									],
+									"path": [
+										"api",
+										"suppliers",
+										"1000"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "find suppliers by name",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "transactionid",
+										"value": "{{$guid}}",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{product-api-base-url}}/api/suppliers/name/am",
+									"host": [
+										"{{product-api-base-url}}"
+									],
+									"path": [
+										"api",
+										"suppliers",
+										"name",
+										"am"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "find all suppliers",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "transactionid",
+										"value": "{{$guid}}",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{product-api-base-url}}/api/suppliers",
+									"host": [
+										"{{product-api-base-url}}"
+									],
+									"path": [
+										"api",
+										"suppliers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update one supplier by id",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "transactionid",
+										"value": "{{$guid}}",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Panino\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{product-api-base-url}}/api/suppliers/1000",
+									"host": [
+										"{{product-api-base-url}}"
+									],
+									"path": [
+										"api",
+										"suppliers",
+										"1000"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete one suplier by id",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "transactionid",
+										"value": "{{$guid}}",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{product-api-base-url}}/api/suppliers/1000",
+									"host": [
+										"{{product-api-base-url}}"
+									],
+									"path": [
+										"api",
+										"suppliers",
+										"1000"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "check api status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "transactionid",
+								"value": "{{$guid}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{product-api-base-url}}",
+							"host": [
+								"{{product-api-base-url}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "sales-api",
+			"item": [
+				{
+					"name": "check api status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{sales-api-base-url}}/",
+							"host": [
+								"{{sales-api-base-url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find one order by id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							},
+							{
+								"key": "transactionid",
+								"value": "{{$guid}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{sales-api-base-url}}/api/orders/65567a9dbcfadc3a89628098",
+							"host": [
+								"{{sales-api-base-url}}"
+							],
+							"path": [
+								"api",
+								"orders",
+								"65567a9dbcfadc3a89628098"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find all orders",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							},
+							{
+								"key": "transactionid",
+								"value": "{{$guid}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{sales-api-base-url}}/api/orders",
+							"host": [
+								"{{sales-api-base-url}}"
+							],
+							"path": [
+								"api",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find all orders by product id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							},
+							{
+								"key": "transactionid",
+								"value": "{{$guid}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{sales-api-base-url}}/api/orders/product/1001",
+							"host": [
+								"{{sales-api-base-url}}"
+							],
+							"path": [
+								"api",
+								"orders",
+								"product",
+								"1001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							},
+							{
+								"key": "transactionid",
+								"value": "{{$guid}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"products\": [\r\n        {\r\n            \"productId\": 1001,\r\n            \"quantity\": 1\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{sales-api-base-url}}/api/orders",
+							"host": [
+								"{{sales-api-base-url}}"
+							],
+							"path": [
+								"api",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "auth-api-base-url",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "product-api-base-url",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "sales-api-base-url",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": ""
+		}
+	]
+}
