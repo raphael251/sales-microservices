@@ -116,7 +116,7 @@ export class OrderService {
     }));
   }
 
-  async findByProductId(productId: string, transactionId: string, serviceId: string): Promise<Array<OrderResponseDTO>> {
+  async findByProductId(productId: string, transactionId: string, serviceId: string): Promise<{ salesIds: Array<string> }> {
     TracingLogUtil.receivingRequest('GET', 'order findByProductId', { productId }, transactionId, serviceId);
 
     const orders = await this.orderRepository.findByProductId(productId);
@@ -127,13 +127,8 @@ export class OrderService {
 
     TracingLogUtil.respondingRequest('GET', 'order findByProductId', { orders }, transactionId, serviceId);
 
-    return orders.map(order => ({
-      id: order.id,
-      products: order.products,
-      user: order.user,
-      status: order.status,
-      transactionId: order.transactionId,
-      serviceId: order.serviceId
-    }));
+    const salesIds = orders.map(order => order.id as string);
+
+    return { salesIds }
   }
 }
