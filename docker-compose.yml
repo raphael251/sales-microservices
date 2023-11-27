@@ -90,7 +90,7 @@ services:
       - JWT_SECRET=f4c77928acb18a37a7f8b5e7af63f4fd
       - MONGO_DB_URL=mongodb://admin:123456@sales-db:27017/sales?authSource=admin
       - RABBIT_MQ_URL=amqp://sales-rabbit:5672
-      - PRODUCT_API_URL=http://product-api:8081/api/product
+      - PRODUCT_API_URL=http://product-api:8081/api/products
       - PORT=8082
       - NODE_ENV=container
     ports:
