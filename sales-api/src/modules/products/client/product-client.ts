@@ -28,7 +28,8 @@ export class ProductClient {
       }
       
       TracingLogUtil.sendingRequestFail('POST', 'checkProductStock', products, transactionId, serviceId);
-      throw new Error('Error requesting the products API');
+      if (error instanceof Error) throw error
+      else throw new Error('Error requesting the products API');
     }
   }
 }
