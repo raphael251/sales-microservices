@@ -31,6 +31,18 @@ The sales API is responsible for managing the orders. It sends and receives requ
 7. If the product is out of stock, the product API sends the message with the rejected status.
 8. If the product stock is okay, the product API sends the message with the approved status.
 
+## Testing the services
+
+The services can be tested through a collection that I put in the content folder. The collection has folders for each one of the services:
+
+![macro architecture](content/collection-folders.png)
+
+The first service that needs to be called is the auth service. I put a script in the get token request so you don't need to pass the access token in the subsequent requests. The script will save the token in a collection variable and the other requests will call this variable and use it.
+
+## Tracing and Transaction IDs
+
+At every request, you must pass a transaction id in the header, so if there is some problem during the request, the application will log this transaction id and this can be used as a tracing method to see exactly which request got errors and what happened in what service, since the same transaction id will be passed from one service to another in a real-world request.
+
 ## Technologies
 
 ### Shared
@@ -82,4 +94,4 @@ You can run this project by running `docker compose up --build` to build all the
 
 ### Auth and Sales APIs
 
-You can run this the tests for the Auth and Sales API by running `npm run test` or `npm run test:coverage` on each project's folder, after installing the dependencies with the `npm install` command.
+You can run the tests for the Auth and Sales API by running `npm run test` or `npm run test:coverage` on each project's folder, after installing the dependencies with the `npm install` command.
